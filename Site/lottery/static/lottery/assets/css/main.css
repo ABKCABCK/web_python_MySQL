@@ -1592,3 +1592,25 @@
 		body.is-loading #footer {
 			opacity: 0;
 		}
+
+	div.number {
+		color: #3C403E;
+		font-size: 25px;
+		float: left;
+		width: 15%;
+		line-height: 80px;
+		text-align: center;
+		font-family: fantasy;
+		border: 3px #666 dashed;
+		border-color: #F1FFF5;
+		border-radius: 99em;
+		margin: 5px;
+		transition:background-color 0.3s linear
+	}
+
+	div.number:hover {
+		background-color: #CAEDFF; 
+		
+	}
+
+	

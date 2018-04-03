@@ -18,6 +18,8 @@
 	$(function() {
 
 		var	$window = $(window),
+			// HTML tag:  without #
+			// HTML id:   with #s
 			$body = $('body'),
 			$wrapper = $('#wrapper'),
 			$header = $('#header'),
@@ -80,6 +82,10 @@
 
 					var $article = $main_articles.filter('#' + id);
 
+					console.log( "Initial: ", initial)
+					console.log( "$article.length: ", $article.length)
+
+
 					// No such article? Bail.
 						if ($article.length == 0)
 							return;
@@ -88,7 +94,7 @@
 
 						// Already locked? Speed through "show" steps w/o delays.
 							if (locked || (typeof initial != 'undefined' && initial === true)) {
-
+									console.log( "Already locked? Speed through \"show\" steps w/o delays.")
 								// Mark as switching.
 									$body.addClass('is-switching');
 
@@ -123,9 +129,12 @@
 
 						// Lock.
 							locked = true;
+							console.log("$body.hasClass('is-article-visible'): ", $body.hasClass('is-article-visible'))
+
 
 					// Article already visible? Just swap articles.
 						if ($body.hasClass('is-article-visible')) {
+
 
 							// Deactivate current article.
 								var $currentArticle = $main_articles.filter('.active');
@@ -165,9 +174,83 @@
 					// Otherwise, handle as normal.
 						else {
 
+							// set numebrs if the work block has been clicked!
+							console.log( $article.attr('id'));
+
+
+
+							if( $article.attr('id') === 'work' ) {
+								if( $( ".number" ).length ) {
+								} else {
+									var percentage = 1 / balls;
+									var number_block = {
+										"class": "number",
+										"text": Math.floor( Math.random() * 100 )
+									}
+									for (var i = 0; i < balls; i++) {
+										$("<div/>", number_block).appendTo($(".work"));
+										number_block.text = Math.floor( Math.random() * 100 )
+									}
+								}
+								if( $( ".number" ).length ) {
+									$(".number").on("click", function() {
+										console.log("number clicked!")
+										if( numberCount < maxNumberSelect || $(this).hasClass('selected') ) {
+											if ( $(this).hasClass('selected') ) {
+												$(this).removeClass('selected');
+												$(this).css('background-color', '');
+												numberCount --;
+											} else {
+												$(this).css('background-color', '#CAEDFF');
+												$(this).addClass('selected')
+												numberCount ++;
+											}
+										} else {
+											alert('Can\'t Select Any More');
+										}
+									});
+								$("#btn_go").on('click', function(){
+									var $number_selected = $('.selected');
+									var nums= new Array();
+
+									if( $number_selected.length !== maxNumberSelect ) {
+										alert("select 5 numbers");
+									} else {
+										$number_selected.each(function(){
+											nums.push( $(this).text() );
+										});
+										console.log(nums)
+
+										$.ajax({
+											url: "/index/",
+											data: {
+												'date': new Date(),
+												'nums[]': nums
+											},
+											success: function(data){
+												alert("Success: " + data);
+												document.location.href = '/index'
+
+											},
+											type: 'POST',
+											dataType: 'json'
+										});
+									}
+
+
+
+								})
+							}
+
+
+							}
+
+							
+
+
 							// Mark as visible.
-								$body
-									.addClass('is-article-visible');
+								$body.addClass('is-article-visible');
+									
 
 							// Show article.
 								setTimeout(function() {
@@ -210,6 +293,8 @@
 					// Article not visible? Bail.
 						if (!$body.hasClass('is-article-visible'))
 							return;
+
+						console.log("addState: ", addState, locked)
 
 					// Add state?
 						if (typeof addState != 'undefined'
@@ -296,6 +381,7 @@
 				$main_articles.each(function() {
 
 					var $this = $(this);
+					console.log("this: ", $this)
 
 					// Close.
 						$('<div class="close">Close</div>')
@@ -306,8 +392,10 @@
 
 					// Prevent clicks from inside article from bubbling.
 						$this.on('click', function(event) {
+							console.log( "this.onclick" )
 							event.stopPropagation();
 						});
+
 
 				});
 
